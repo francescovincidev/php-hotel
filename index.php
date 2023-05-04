@@ -40,6 +40,32 @@ $hotels = [
 
 ];
 
+$have_parking = filter_var($_GET["have_parking"], FILTER_VALIDATE_BOOLEAN);
+
+$min_vote = (int)$_GET["min_vote"];
+
+$filetredHotels = [];
+
+
+foreach ($hotels as $hotel) {
+
+    // Prendiamo solo gli hotel con voto maggiore di min_vote (lo fa sempre ma quando inizia o seleziona è = 0)
+    if ($hotel['vote'] >= $min_vote) {
+
+        // Se è attivo il selettore di parcheggio
+        if ($have_parking) {
+            // carichiamo solo gli elementi che hanno hotel[parking] true
+            if ($hotel['parking']) {
+                $filetredHotels[] = $hotel;
+            };
+
+            // se non è attivo il selettore di parcheggio carichiamo gli hotel con voto maggiore di min_vote
+        } else {
+            $filetredHotels[] = $hotel;
+        };
+    };
+};
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -57,6 +83,34 @@ $hotels = [
 
 <body>
 
+    <h3 class="text-center">Filtra in base ai tuoi gusti</h3>
+    <form action="index.php" method="GET" class="text-center mb-4">
+        <div>
+            <div class="m-3">
+
+                <label for="min_vote">Voto minimo:</label>
+                <select type="number" name="min_vote" id="min_vote">
+                    <option value=0>Seleziona</option>
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+
+                </select>
+            </div>
+            <div class="m-3">
+                <label for="have_parking">Parcheggio</label>
+                <input type="checkbox" id="have_parking" name="have_parking" value=true>
+
+            </div>
+
+        </div>
+        <button type="submit">Invia</button>
+        <button type="reset">Annulla</button>
+    </form>
+
+    <h2 class="text-center">Hotels</h2>
     <table class="table">
 
         <thead>
@@ -71,25 +125,27 @@ $hotels = [
         </thead>
 
         <tbody>
-            <?php foreach ($hotels as $hotel) { ?>
+            <?php foreach ($filetredHotels as $hotel) {
+            ?>
                 <tr>
-                    <?php foreach ($hotel as $key => $hotelinfo) { ?> <td <?php if ($key === 'parking' || $key === 'vote' || $key === 'distance_to_center') echo "class=text-center"; ?>><?php
-                                                                                                                                                                                            if ($key === 'parking') {
-                                                                                                                                                                                                if ($hotelinfo) {
-                                                                                                                                                                                                    echo "&#10004;";
-                                                                                                                                                                                                } else {
-                                                                                                                                                                                                    echo "&#10006;";
-                                                                                                                                                                                                }
-                                                                                                                                                                                            } else {
+                    <?php foreach ($hotel as $key => $hotelinfo) {
 
-                                                                                                                                                                                                echo "$hotelinfo";
-                                                                                                                                                                                                if ($key === 'distance_to_center') echo " KM" ?><?php
-                                                                                                                                                                                                                                }
+                    ?> <td <?php if ($key === 'parking' || $key === 'vote' || $key === 'distance_to_center') echo "class=text-center"; ?>><?php
+                                                                                                                                            if ($key === 'parking') {
+                                                                                                                                                if ($hotelinfo) {
+                                                                                                                                                    echo "&#10004;";
+                                                                                                                                                } else {
+                                                                                                                                                    echo "&#10006;";
+                                                                                                                                                }
+                                                                                                                                            } else {
 
-                                                                                                                                                                                                                                    ?> </td>
+                                                                                                                                                echo "$hotelinfo";
+                                                                                                                                                if ($key === 'distance_to_center') echo " KM" ?><?php
+                                                                                                                                                                                            }
+                                                                                                                                                                                        } ?> </td>
 
 
-                    <?php } ?>
+
                 </tr>
             <?php } ?>
 
@@ -97,6 +153,10 @@ $hotels = [
         </tbody>
 
     </table>
+
+
+
+
 
 </body>
 
