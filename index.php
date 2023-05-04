@@ -48,17 +48,55 @@ $hotels = [
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
     <title>Document</title>
 </head>
 
 <body>
-    <?php foreach ($hotels as $hotel) {
-        foreach ($hotel as $key => $hotelinfo) {
 
-    ?> <div><?php echo "$key:  $hotelinfo" ?></div> <?php
+    <table class="table">
 
-                                                } ?><br><?php
-                                                    } ?>
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Descrizione</th>
+                <th scope="col" class="text-center">Parcheggio</th>
+                <th scope="col" class="text-center">Voto</th>
+                <th scope="col" class="text-center">Distanza dal centro</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php foreach ($hotels as $hotel) { ?>
+                <tr>
+                    <?php foreach ($hotel as $key => $hotelinfo) { ?> <td <?php if ($key === 'parking' || $key === 'vote' || $key === 'distance_to_center') echo "class=text-center"; ?>><?php
+                                                                                                                                                                                            if ($key === 'parking') {
+                                                                                                                                                                                                if ($hotelinfo) {
+                                                                                                                                                                                                    echo "&#10004;";
+                                                                                                                                                                                                } else {
+                                                                                                                                                                                                    echo "&#10006;";
+                                                                                                                                                                                                }
+                                                                                                                                                                                            } else {
+
+                                                                                                                                                                                                echo "$hotelinfo";
+                                                                                                                                                                                                if ($key === 'distance_to_center') echo " KM" ?><?php
+                                                                                                                                                                                                                                }
+
+                                                                                                                                                                                                                                    ?> </td>
+
+
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+
+
+        </tbody>
+
+    </table>
 
 </body>
 
